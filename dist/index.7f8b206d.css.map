@@ -1,0 +1,1 @@
+{"mappings":"AAAA;;;;AAKA","sources":["src/jobsearch.css"],"sourcesContent":["body {\r\n    background-color: rgb(77, 4, 4);\r\n}\r\n\r\n\r\n.NotSupported {\r\n    justify-content: center;\r\n}"],"names":[],"version":3,"file":"index.7f8b206d.css.map","sourceRoot":"/__parcel_source_root/"}

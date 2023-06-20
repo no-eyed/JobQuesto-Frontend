@@ -1,0 +1,16 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "frontoendo",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./node_modules/parcel/lib/cli index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "me",
+  "license": "ISC",
+  "dependencies": {
+    "parcel": "^2.8.3",
+    "parse": "^4.0.1"
+  }
+}
