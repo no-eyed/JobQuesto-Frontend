@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(90deg, #0d8a14 0%, #02b369 35%, #00d4ff 100%);
+  background-image: linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%);
 }
 
 .loading-element {
@@ -23,7 +23,7 @@ body {
   opacity: .8;
   background-color: beige;
   border: 1ch solid #8b4513;
-  padding: 2%;
+  padding: 1%;
   display: grid;
 }
 
@@ -33,14 +33,34 @@ body {
 }
 
 #Search-form {
-  width: 60%;
   height: 100%;
+  width: 100%;
   justify-self: center;
   align-items: center;
   display: grid;
 }
 
-.form-content, .seach-btn {
+.input-box {
+  flex-direction: row;
+  justify-content: center;
+  display: flex;
+}
+
+.job-box, .location-box {
+  width: 25%;
+  flex-direction: column;
+  justify-content: space-evenly;
+  display: flex;
+}
+
+.form-content {
+  margin: .5%;
+  padding: 1%;
+}
+
+.seach-btn {
+  width: 50%;
+  justify-self: center;
   margin: 1%;
   padding: .5%;
 }

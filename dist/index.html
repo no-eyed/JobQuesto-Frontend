@@ -14,16 +14,22 @@
             <h1 class="label">JobQuesto</h1>
             <div class="input-container">
             <form id="Search-form">
-                <input type="text" class="form-content" list="job-title-sugggestions" placeholder="Keywords you want to search for" id="search">
+                <div class="input-box">
+                <div class="job-box">
+                    <input type="text" class="form-content" list="job-title-sugggestions" placeholder="Keywords you want to search for" id="search">
                     <datalist id="job-title-sugggestions"> 
                     </datalist>
-                <input type="text" class="form-content" list="category-suggestions" placeholder="Job Category" id="category">
+                    <input type="text" class="form-content" list="category-suggestions" placeholder="Job Category" id="category">
                     <datalist id="category-suggestions">
                     </datalist>
-                <input type="text" class="form-content" list="location-suggestions" placeholder="City Name" id="location">
-                <input type="text" class="form-content" list="country-suggestions" placeholder="Country" id="country">
+                </div>
+                <div class="location-box">
+                    <input type="text" class="form-content" list="location-suggestions" placeholder="City Name" id="location">
+                    <input type="text" class="form-content" list="country-suggestions" placeholder="Country" id="country">
                     <datalist id="country-suggestions">
                     </datalist>
+                </div>
+                </div>
                 <button class="seach-btn" id="strt">Search</button>
             </form>
             <script src="/index.edfbb265.js" defer=""></script>

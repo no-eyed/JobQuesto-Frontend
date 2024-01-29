@@ -1,12 +1,5 @@
 body {
-    /* background-color: rgb(146, 241, 137); */
-    /* background-image: linear-gradient(to right, red , yellow); */
-
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgb(13, 138, 20) 0%, rgb(2, 179, 105) 35%, rgba(0,212,255,1) 100%);
-
-    /* background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(78,255,0,1) 0%, rgba(0,212,255,1) 100%); */
+    background-image: linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%);
 }
 
 .loading-element {
@@ -31,11 +24,10 @@ body {
 
 .form-container {
     display: grid;
-    /* flex-direction: column; */
     opacity: 80%;
     background-color: beige;
     border: 1ch saddlebrown solid;
-    padding: 2%;
+    padding: 1%;
 }
 
 .input-container {
@@ -45,27 +37,38 @@ body {
 
 #Search-form {
     display: grid;
-    /* justify-content: center; */
-    width: 60%;
     height: 100%;
+    width: 100%;
     justify-self: center;
     align-items: center;
 }
+.input-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.job-box, .location-box {
+    display: flex;
+    width: 25%;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+
 .form-content{
-    padding: 0.5%;
-    margin: 1%
+    padding: 1%;
+    margin: 0.5%
 }
 .seach-btn {
     padding: 0.5%;
-    margin: 1%
+    margin: 1%;
+    width: 50%;
+    justify-self: center;
 }
 
 .label{
     text-align: center;
-    /* display: grid; */
-    /* justify-self: center;
-    justify-items: center;
-    justify-content: center; */
 }
 
 
@@ -74,14 +77,8 @@ body {
     grid-template-columns: repeat(3, 1fr);
 }
 
-/* .cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-} */
 
 .card {
-    /* display: flex;
-    flex-direction: row; */
     background-color: aliceblue;
     opacity: 70%;
     margin: 1ch;
