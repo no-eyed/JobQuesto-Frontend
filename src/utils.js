@@ -2,10 +2,24 @@ export const getCurrencySymbol = countryCode => {
     const currencies = {
         gb: '£',
         us: '$',
+        at: '€',        
         au: '$',
+        be: '€',
+        br: 'R$',
         ca: '$',
+        ch: 'Fr',
+        de: '€',
+        es: '€',
+        fr: '€',
         in: '₹',
-        
+        it: '€',
+        mx: '$',
+        nl: '€',
+        nz: '$',
+        pl: 'zł',
+        ru: '₽',
+        sg: '$',
+        za: 'R',
     }
     return currencies[countryCode];
 }

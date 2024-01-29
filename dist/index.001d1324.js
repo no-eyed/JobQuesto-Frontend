@@ -558,79 +558,31 @@ function hmrAccept(bundle, id) {
 
 },{}],"cWP7n":[function(require,module,exports) {
 var _jobSearch = require("./JobSearch");
-const jobSearch = new (0, _jobSearch.JobSearch)("#Search-form", ".result-container", ".loading-element", "#location", ".NotSupported");
-// jobSearch.setCountryCode();
-// jobSearch.configureFormListener();
+const jobSearch = new (0, _jobSearch.JobSearch)("#Search-form", ".result-container", ".loading-element", "#location", ".not-supported", ".wrong-input");
 strt.addEventListener("click", ()=>{
     jobSearch.setCountryCode();
     jobSearch.configureFormListener();
 });
 
 },{"./JobSearch":"PAMe9"}],"PAMe9":[function(require,module,exports) {
-// const { getCurrencySymbol, extractFormData} = require("./utils");
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "JobSearch", ()=>JobSearch);
 var _utils = require("./utils");
 var _templates = require("./templates");
-const SupportedCountries = [
-    "at",
-    "au",
-    "be",
-    "br",
-    "ca",
-    "ch",
-    "de",
-    "es",
-    "fr",
-    "gb",
-    "in",
-    "it",
-    "mx",
-    "nl",
-    "nz",
-    "pl",
-    "ru",
-    "sg",
-    "us",
-    "za"
-];
+var _countriesandjobtags = require("./countriesandjobtags");
 class JobSearch {
-    constructor(searchFormSelector, resultsContainerSelector, loadingElementSelector, cityElementSelector, NotSupportedElementSelector){
+    constructor(searchFormSelector, resultsContainerSelector, loadingElementSelector, cityElementSelector, NotSupportedElementSelector, WrongInputElementSelector){
         this.searchForm = document.querySelector(searchFormSelector);
         this.resultsContainer = document.querySelector(resultsContainerSelector);
         this.loadingElement = document.querySelector(loadingElementSelector);
         this.citySelector = document.querySelector(cityElementSelector);
         this.NotSupportedSelector = document.querySelector(NotSupportedElementSelector);
+        this.WrongInputSelector = document.querySelector(WrongInputElementSelector);
     }
-    setCountryCode() {
-        this.countryCodes = "in";
-        //this.setCurrencyCode();
-        const city = this.citySelector.value;
-        //const username = 'arjyo';
-        const endpoint = `https://api.api-ninjas.com/v1/country?name=${city}`;
-        const headers = {
-            "X-Api-Key": "7UbqgI2qdeOQQB6stFq5bA==L7XPu56NDebo0R4u"
-        };
-        fetch(endpoint, {
-            headers
-        }).then((response)=>response.json()).then((data)=>{
-            if (data && data.length > 0) {
-                console.log(data);
-                this.countryCodes = data[0].iso2.toLowerCase();
-                console.log("setCountryCode wala", this.countryCodes);
-                this.setCurrencyCode();
-            }
-        }).catch((error)=>{
-            console.log(error);
-        });
-    // fetch(`http://api.geonames.org/searchJSON?q=${city}&maxRows=1&username=${username}`)
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         const result = data.geonames[0];
-    //         this.countryCodes = result.countryCode.toLowerCase();
-    //         this.setCurrencyCode();
-    //     });
+    setCountryCode(country) {
+        this.countryCodes = (0, _countriesandjobtags.CountryMap)[country];
+        this.setCurrencyCode();
     }
     setCurrencyCode() {
         this.currencySymbol = (0, _utils.getCurrencySymbol)(this.countryCodes);
@@ -639,10 +591,17 @@ class JobSearch {
         this.searchForm.addEventListener("submit", (e)=>{
             e.preventDefault();
             this.resultsContainer.innerHTML = "";
-            const { search , location  } = (0, _utils.extractFormData)(this.searchForm);
-            this.setCountryCode();
-            console.log(search, location, this.countryCodes);
-            const endpoint = `https://api.api-ninjas.com/v1/country?name=${location}`;
+            const { search , category , location , country  } = (0, _utils.extractFormData)(this.searchForm);
+            this.setCountryCode(country);
+            this.loadingElement.style.display = "flex";
+            this.NotSupportedSelector.style.display = "none";
+            this.jobCategory = (0, _countriesandjobtags.JobLabelTagMap)[category];
+            if (this.jobCategory === undefined) {
+                this.WrongInputSelector.style.display = "flex";
+                return;
+            }
+            const city = this.citySelector.value;
+            const endpoint = `https://api.api-ninjas.com/v1/country?name=${city}`;
             const headers = {
                 "X-Api-Key": "7UbqgI2qdeOQQB6stFq5bA==L7XPu56NDebo0R4u"
             };
@@ -650,26 +609,22 @@ class JobSearch {
                 headers
             }).then((response)=>response.json()).then((data)=>{
                 if (data && data.length > 0) {
-                    this.countryCodes = data[0].iso2.toLowerCase();
-                    if (SupportedCountries.includes(this.countryCodes)) {
-                        //this.setCurrencyCode();
-                        this.NotSupportedSelector.style.display = "none";
-                        fetch(`https://troubled-outerwear-mite.cyclic.app/?search=${search}&location=${location}&country=${this.countryCodes}`).then((response)=>response.json()).then(({ results  })=>{
-                            return results.map((job)=>(0, _templates.jobTemplate)(job, this.currencySymbol)).join("");
-                        }).then((jobs)=>this.resultsContainer.innerHTML = jobs);
-                    } else {
-                        this.NotSupportedSelector.innerHTML = "<p>No Jobs available in this region</p>";
-                        this.NotSupportedSelector.style.display = "flex";
-                        // this.NotSupportedSelector.appendChild(element);
-                        console.log(this.NotSupportedSelector);
-                    }
+                    let locationCountryCode = data[0].iso2.toLowerCase();
+                    if (locationCountryCode === this.countryCodes && (0, _countriesandjobtags.SupportedCountries).includes(locationCountryCode)) fetch(`https://troubled-outerwear-mite.cyclic.app/?search=${search}&location=${location}&country=${this.countryCodes}&category=${this.jobCategory}`).then((response)=>response.json()).then(({ results  })=>{
+                        if (results.length === 0) this.NotSupportedSelector.style.display = "flex";
+                        return results.map((job)=>(0, _templates.jobTemplate)(job, this.currencySymbol)).join("");
+                    }).then((jobs)=>this.resultsContainer.innerHTML = jobs);
+                    else if (locationCountryCode != this.countryCodes) this.WrongInputSelector.style.display = "flex";
+                    else this.NotSupportedSelector.style.display = "flex";
                 }
-            }).catch((error)=>console.error(error));
+            }).catch((error)=>console.error(error)).finally(()=>{
+                this.loadingElement.style.display = "none";
+            });
         });
     }
 }
 
-},{"./utils":"en4he","./templates":"gOO7a","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"en4he":[function(require,module,exports) {
+},{"./utils":"en4he","./templates":"gOO7a","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./countriesandjobtags":"3kd1L"}],"en4he":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getCurrencySymbol", ()=>getCurrencySymbol);
@@ -678,9 +633,24 @@ const getCurrencySymbol = (countryCode)=>{
     const currencies = {
         gb: "\xa3",
         us: "$",
+        at: "€",
         au: "$",
+        be: "€",
+        br: "R$",
         ca: "$",
-        in: "₹"
+        ch: "Fr",
+        de: "€",
+        es: "€",
+        fr: "€",
+        in: "₹",
+        it: "€",
+        mx: "$",
+        nl: "€",
+        nz: "$",
+        pl: "zł",
+        ru: "₽",
+        sg: "$",
+        za: "R"
     };
     return currencies[countryCode];
 };
@@ -689,37 +659,7 @@ const extractFormData = (form)=>Array.from(form.elements).reduce((acc, { id , va
             [id]: value
         }), {});
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"gOO7a":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gOO7a":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "jobTemplate", ()=>jobTemplate);
